@@ -1,0 +1,4 @@
+user:root
+password:145871
+host:localhost
+database:cine_db
