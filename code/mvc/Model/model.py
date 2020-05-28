@@ -356,10 +356,10 @@ class Model:
     *     Metodos para Funcion       *
     ************************************
     """
-    def crear_funcion(self, Id_Pelicula, Id_Sala, fecha_hora):
+    def crear_funcion(self, Id_Pelicula, Id_Sala, horario):
             try:
-                sql = 'INSERT INTO funcion (`Id_Pelicula`,`Id_Sala`,`fecha_hora`) VALUES (%s,%s,%s,%s)'
-                vals = (Id_Pelicula, Id_Sala, fecha_hora)
+                sql = 'INSERT INTO funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (%s,%s,%s)'
+                vals = (Id_Pelicula, Id_Sala, horario)
                 self.cursor.execute(sql, vals)
                 self.cnx.commit()
                 return True

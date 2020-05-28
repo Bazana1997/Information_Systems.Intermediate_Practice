@@ -146,11 +146,9 @@ class Controller:
             elif o == '2':
                 self.leer_peliculas()
             elif o == '3':
-                #self.ComTicket()
-                pass
+                self.actualizar_Ticket()
             elif o == '4':
-                #self.VerTicket()
-                pass
+                self.leer_Ticket()
             elif o == '5':
                 self.view.end()
             else:
@@ -478,7 +476,7 @@ class Controller:
         if result == True:
             self.view.msg('butaca creada')
         else:
-            self.view.err(result)
+            self.view.err('Butaca ya creada.')
 
     def leer_butaca(self):
         self.view.ask('ID butaca: ')
@@ -911,6 +909,7 @@ class Controller:
         result = self.model.crear_Ticket(Id_Funcion, Id_Usuario, Id_Butaca)
         if result == True:
             self.view.msg('Ticket creado')
+            print("creado")
         else:
             self.view.err(result)
 

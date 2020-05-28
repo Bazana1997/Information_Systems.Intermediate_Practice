@@ -38,7 +38,7 @@ create table if not exists Sala(
 ) ENGINE = INNODB;
 
 create table if not exists Butaca(
-	Id_Butaca int not null,
+	Id_Butaca int not null UNIQUE,
     Estado bool not null,
     primary key (Id_Butaca)
 ) ENGINE = INNODB;
@@ -47,7 +47,8 @@ create table if not exists Funcion(
 	Id_Funcion int not null auto_increment,
     Id_Pelicula int not null,
     Id_Sala int not null,
-    horario varchar(30) not null,
+    fecha DATE not null,
+    horario TIME not null,
 	primary key(Id_Funcion),
     constraint fk_Funcion_Pelicula foreign key(Id_Pelicula)
 		references Pelicula(Id_Pelicula)
@@ -93,17 +94,17 @@ INSERT INTO sala (`Asientos`, `Tipo`) VALUES ('100', '3D');
 INSERT INTO sala (`Asientos`, `Tipo`) VALUES ('150', 'Normal');
 INSERT INTO sala (`Asientos`, `Tipo`) VALUES ('100', 'iMax');
 
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (1,1,'2020-05-26 14:30:00');
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (1,1,'2020-05-26 16:50:00');
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (1,1,'2020-05-26 17:50:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (1,1,'2020-05-26','14:30:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (1,1,'2020-05-26', '16:50:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (1,1,'2020-05-26', '17:50:00');
 
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (2,1,'2020-05-28 12:00:00');
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (2,2,'2020-05-28 12:30:00');
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (2,3,'2020-05-29 14:30:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (2,1,'2020-05-28', '12:00:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (2,2,'2020-05-28', '12:30:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (2,3,'2020-05-29', '14:30:00');
 
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (3,2,'2020-05-26 13:30:00');
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (3,1,'2020-05-26 15:30:00');
-INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (3,3,'2020-05-29 12:30:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (3,2,'2020-05-26', '13:30:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (3,1,'2020-05-26', '15:30:00');
+INSERT INTO Funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (3,3,'2020-05-29', '12:30:00');
 
 INSERT INTO  Butaca(`Id_Butaca`,`Estado`) VALUES (1,1);
 INSERT INTO  Butaca(`Id_Butaca`,`Estado`) VALUES (2,1);
