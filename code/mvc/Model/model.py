@@ -356,10 +356,10 @@ class Model:
     *     Metodos para Funcion       *
     ************************************
     """
-    def crear_funcion(self, Id_Pelicula, Id_Sala, horario):
+    def crear_funcion(self, Id_Pelicula, Id_Sala, fecha, horario):
             try:
-                sql = 'INSERT INTO funcion (`Id_Pelicula`,`Id_Sala`,`horario`) VALUES (%s,%s,%s)'
-                vals = (Id_Pelicula, Id_Sala, horario)
+                sql = 'INSERT INTO funcion (`Id_Pelicula`,`Id_Sala`,`fecha`,`horario`) VALUES (%s,%s,%s,%s)'
+                vals = (Id_Pelicula, Id_Sala, fecha, horario)
                 self.cursor.execute(sql, vals)
                 self.cnx.commit()
                 return True
@@ -379,7 +379,7 @@ class Model:
 
     def leer_funciones(self):
         try:
-            sql = 'SELECT * FROM funcion'
+            sql = 'SELECT funcion.*, pelicula.Titulo FROM funcion JOIN pelicula ON funcion.Id_Pelicula = pelicula.Id_pelicula'
             self.cursor.execute(sql)
             records = self.cursor.fetchall()
             return records
@@ -408,6 +408,37 @@ class Model:
             self.cnx.rollback()
             return(err)    
 
+    def horario_funcion(self,horario):
+        try:
+            sql = 'SELECT funcion.*, pelicula.Titulo FROM funcion JOIN pelicula ON funcion.Id_Pelicula = pelicula.Id_Pelicula AND funcion.horario = %s'
+            vals = (horario,)
+            self.cursor.execute(sql, vals)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+
+    def fecha_funcion(self,fecha):
+        try:
+            sql = 'SELECT funcion.*, pelicula.Titulo FROM funcion JOIN pelicula ON funcion.Id_Pelicula = pelicula.Id_Pelicula AND funcion.fecha = %s'
+            vals = (fecha,)
+            self.cursor.execute(sql, vals)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+
+    def pelicula_funcion(self,Id_Pelicula):
+        try:
+            sql = 'SELECT funcion.*, pelicula.Titulo FROM funcion JOIN pelicula ON funcion.Id_Pelicula = pelicula.Id_Pelicula AND funcion.Id_Pelicula = %s'
+            vals = (Id_Pelicula,)
+            self.cursor.execute(sql, vals)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err
+
+
     """
     ************************************
     *        Metodos para Ticket       *
@@ -415,7 +446,7 @@ class Model:
     """
     def crear_Ticket(self, Id_Funcion, Id_Usuario, Id_Butaca):
         try:
-            sql = 'insert into ticket (`Id_Funcion`,`Id_Usuario`, `Id_Butaca`) values (%s, %s, %s)'
+            sql = 'INSERT INTO ticket (`Id_Funcion`,`Id_Usuario`, `Id_Butaca`) values (%s, %s, %s)'
             vals = (Id_Funcion, Id_Usuario, Id_Butaca)
             self.cursor.execute(sql, vals)
             self.cnx.commit()
@@ -435,7 +466,7 @@ class Model:
 
     def leer_Tickets(self):
         try:
-            sql = 'SELECT * FROM Ticket'
+            sql = 'SELECT * FROM ticket'
             self.cursor.execute(sql)
             records = self.cursor.fetchall()
             return records
@@ -463,3 +494,13 @@ class Model:
         except connector.Error as err:
             self.cnx.rollback()
             return(err)
+
+    def leer_Tickets_usuario(self,Id_Usuario):
+        try:
+            sql = 'SELECT ticket.*, usuario.Nombre FROM ticket JOIN usuario ON ticket.Id_usuario = usuario.Id_usuario AND ticket.Id_Usuario = %s'
+            vals = (Id_Usuario,)
+            self.cursor.execute(sql, vals)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return err

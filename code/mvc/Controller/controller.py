@@ -66,6 +66,7 @@ class Controller:
         Email, password = self.ask_inicio()
         usuario = self.model.leer_usuario_email_password(Email, password)
         if type(usuario) == tuple:
+            self.sesion = usuario[0]
             self.view.mostrar_usuario_header('Datos de tu usuario')
             self.view.mostrar_usuario(usuario)
             self.view.mostrar_usuario_midder()
@@ -137,19 +138,25 @@ class Controller:
     def menu_user(self):
         os.system ("cls") 
         o = '0'
-        while o != '5':
+        while o != '8':
             self.view.menu_user()
-            self.view.option('5')
+            self.view.option('8')
             o = input()
             if o == '1':
                 self.leer_funciones()
             elif o == '2':
-                self.leer_peliculas()
+                self.horario_funcion()
             elif o == '3':
-                self.actualizar_Ticket()
+                self.fecha_funcion()
             elif o == '4':
-                self.leer_Ticket()
+                self.pelicula_funcion()
             elif o == '5':
+                self.leer_peliculas()
+            elif o == '6':
+                self.crear_Ticket_usuario()
+            elif o == '7':
+                self.leer_Tickets_usuario()
+            elif o == '8':
                 self.view.end()
             else:
                 self.view.not_valid_option()
@@ -188,6 +195,203 @@ class Controller:
                 self.view.not_valid_option()
         return
 
+    """
+    ************************************
+    *   Controladores usuario/admin  *
+    ************************************
+    """
+
+    def CtrlUsuario(self):
+        os.system ("cls") 
+        o = '0'
+        while o != '9':
+            self.view.menu_usuario()
+            self.view.option('9')
+            o = input()
+            if o == '1':
+                self.registro_usuario()
+            elif o == '2':
+                self.leer_usuarios()
+            elif o == '3':
+                self.actualizar_usuario()
+            elif o == '4':
+                self.eliminar_usuario()
+            elif o == '5':
+                self.registro_admin()
+            elif o == '6':
+                self.leer_admins()
+            elif o == '7':
+                self.actualizar_admin()
+            elif o == '8':
+                self.eliminar_admin()
+            elif o == '9':
+                self.view.end()
+            else:
+                self.view.not_valid_option()
+        return
+
+    '''USER'''
+    def ask_usuario(self):
+        self.view.ask('Nombre: ')
+        Nombre = input()
+        self.view.ask('Email: ')
+        Email = input()
+        self.view.ask('Num: ')
+        Num = input()
+        self.view.ask('password: ')
+        password = input()
+        return[Nombre,Email,Num,password]
+            
+    def leer_usuario(self):
+        self.view.ask('ID usuario: ')
+        Id_Usuario = input()
+        usuario = self.model.leer_usuario(Id_Usuario)
+        if type(usuario) == tuple:
+            self.view.mostrar_usuario_header('Datos del usuario'+Id_Usuario+' ')
+            self.view.mostrar_usuario(usuario)
+            self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            if usuario == None:
+                self.view.err('El USUARIO NO EXISTE')
+            else: 
+                self.view.err('PROBLEMA AL LEER EL USUARIO. REVISA.')
+        return   
+
+    def leer_usuarios(self):
+        usuarios = self.model.leer_usuarios()
+        if type(usuarios) == list:
+            self.view.mostrar_usuario_header(' Todos lOs usuarios ')
+            for usuario in usuarios:
+                self.view.mostrar_usuario(usuario)
+                self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            self.view.err('PROBLEMA AL LEER LOS USUARIOS. REVISA')
+        return
+
+    def actualizar_usuario(self):
+        self.view.ask('ID de la usuario: ')
+        Id_Usuario = input()
+        usuario = self.model.leer_usuario(Id_Usuario)
+        if type(usuario) == tuple:
+            self.view.mostrar_usuario_header(' identificador de la usuario '+Id_Usuario+' ')
+            self.view.mostrar_usuario(usuario)
+            self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            if usuario == None:
+                self.view.err('LA usuario NO EXISTE')
+            else:
+                self.view.err('PROBLEMA AL LEER LA usuario. REVISA')
+            return
+        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual):')
+        whole_vals = self.ask_usuario()
+        fields, vals = self.update_lists(['Nombre','Email','Num','password'], whole_vals)
+        vals.append(Id_Usuario)
+        vals = tuple(vals)
+        out = self.model.actualizar_usuario(fields, vals)
+        if out == True:
+            self.view.ok(Id_Usuario, 'actualizo')
+        else:
+            self.view.err('NO SE PUDO ACTUALIZAR EL USUARIO. REVISA.')
+        return
+
+    def eliminar_usuario(self):
+        self.view.ask('ID usuario: ')
+        Id_Usuario = input()
+        count = self.model.eliminar_usuario(Id_Usuario)
+        if count != 0:
+               self.view.ok(Id_Usuario, 'borro')
+        else: 
+            if count == 0:
+                self.view.err('EL USUARIO NO EXISTE')
+            else:
+                self.view.err('PROBLEMA AL BORRAR AL USUARIO. REVISA.')
+        return
+
+
+    '''ADMIN'''
+
+    def ask_admin(self):
+        self.view.ask('Nombre: ')
+        Nombre = input()
+        self.view.ask('Email: ')
+        Email = input()
+        self.view.ask('Num: ')
+        Num = input()
+        self.view.ask('password: ')
+        password = input()
+        return[Nombre,Email,Num,password]
+            
+    def leer_admin(self):
+        self.view.ask('ID admin: ')
+        Id_Administrador = input()
+        admin = self.model.leer_admin(Id_Administrador)
+        if type(admin) == tuple:
+            self.view.mostrar_admin_header('Datos del admin'+Id_Administrador+' ')
+            self.view.mostrar_admin(admin)
+            self.view.mostrar_admin_midder()
+            self.view.mostrar_admin_footer()
+        else:
+            if admin == None:
+                self.view.err('El ADMINISTRADOR NO EXISTE')
+            else: 
+                self.view.err('PROBLEMA AL LEER EL ADMINISTRADOR. REVISA.')
+        return   
+
+    def leer_admins(self):
+        admins = self.model.leer_admins()
+        if type(admins) == list:
+            self.view.mostrar_admin_header(' Todos los admins ')
+            for admin in admins:
+                self.view.mostrar_admin(admin)
+                self.view.mostrar_admin_midder()
+            self.view.mostrar_admin_footer()
+        else:
+            self.view.err('PROBLEMA AL LEER LOS ADMINISTRADOR. REVISA')
+        return
+
+    def actualizar_admin(self):
+        self.view.ask('ID del admin: ')
+        Id_Administrador = input()
+        admin = self.model.leer_admin(Id_Administrador)
+        if type(admin) == tuple:
+            self.view.mostrar_admin_header(' identificador de la admin '+Id_Administrador+' ')
+            self.view.mostrar_admin(admin)
+            self.view.mostrar_admin_midder()
+            self.view.mostrar_admin_footer()
+        else:
+            if admin == None:
+                self.view.err('EL ADMINISTRADOR NO EXISTE')
+            else:
+                self.view.err('PROBLEMA AL LEER EL ADMINISTRADOR. REVISA')
+            return
+        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual):')
+        whole_vals = self.ask_admin()
+        fields, vals = self.update_lists(['Nombre','Email','Num','password'], whole_vals)
+        vals.append(Id_Administrador)
+        vals = tuple(vals)
+        out = self.model.actualizar_admin(fields, vals)
+        if out == True:
+            self.view.ok(Id_Administrador, 'actualizo')
+        else:
+            self.view.err('NO SE PUDO ACTUALIZAR EL ADMINISTRADOR. REVISA.')
+        return
+
+    def eliminar_admin(self):
+        self.view.ask('ID admin: ')
+        Id_Administrador = input()
+        count = self.model.eliminar_admin(Id_Administrador)
+        if count != 0:
+               self.view.ok(Id_Administrador, 'borro')
+        else: 
+            if count == 0:
+                self.view.err('EL ADMINISTRADOR NO EXISTE')
+            else:
+                self.view.err('PROBLEMA AL BORRAR AL ADMINISTRADOR. REVISA.')
+        return
+
 
     """
     ************************************
@@ -220,9 +424,11 @@ class Controller:
         Id_Pelicula = input()
         self.view.ask('Id_Sala: ')
         Id_Sala = input()
+        self.view.ask('fecha: ')
+        fecha = input()
         self.view.ask('horario: ')
         horario = input()
-        return[Id_Pelicula,Id_Sala,horario]
+        return[Id_Pelicula,Id_Sala,fecha,horario]
 
     def crear_funcion(self):
         print('Aregar funcion')
@@ -230,11 +436,13 @@ class Controller:
         Id_Pelicula = input()
         self.view.ask('Id_Sala: ')
         Id_Sala = input()
+        self.view.ask('fecha: ')
+        fecha = input()
         self.view.ask('horario: ')
         horario = input()
 
 
-        result = self.model.crear_funcion(Id_Pelicula, Id_Sala, horario)
+        result = self.model.crear_funcion(Id_Pelicula, Id_Sala, fecha, horario)
         if result == True:
             self.view.msg('funcion creada')
         else:
@@ -285,7 +493,7 @@ class Controller:
             return
         self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual):')
         whole_vals = self.ask_funcion()
-        fields, vals = self.update_lists(['Id_Pelicula','Id_Sala','horario'], whole_vals)
+        fields, vals = self.update_lists(['Id_Pelicula','Id_Sala','fecha','horario'], whole_vals)
         vals.append(Id_Funcion)
         vals = tuple(vals)
         out = self.model.actualizar_funcion(fields, vals)
@@ -296,16 +504,59 @@ class Controller:
         return
 
     def eliminar_funcion(self):
-        self.view.ask('ID plicula: ')
+        self.view.ask('ID funcion: ')
         Id_Funcion = input()
         count = self.model.eliminar_funcion(Id_Funcion)
         if count != 0:
                self.view.ok(Id_Funcion, 'borro')
         else: 
             if count == 0:
-                self.view.err('LA funcion NO EXISTE')
+                self.view.err('LA FUNCION NO EXISTE')
             else:
-                self.view.err('PROBLEMA AL BORRAR LA funcion. REVISA.')
+                self.view.err('PROBLEMA AL BORRAR LA FUNCION. REVISA.')
+        return
+
+
+    def horario_funcion(self):
+        self.view.ask('Hora: (Formato de 24 horas: hh:mm:ss')
+        horario = input()
+        funcion = self.model.horario_funcion(horario)
+        if type(funcion) == list:
+            self.view.mostrar_funcion_header('Funciones con el horario '+horario+' ')
+            for function in funcion:
+                self.view.mostrar_funcion(function)
+                self.view.mostrar_funcion_midder()
+            self.view.mostrar_funcion_footer()
+        else:
+            self.view.err('PROBLEMA AL LEER LAS FUNCIONES. REVISA.')
+        return
+
+    def fecha_funcion(self):
+        self.view.ask('Fecha: (AAAA-MM-DD)')
+        fecha = input()
+        funcion = self.model.fecha_funcion(fecha)
+        if type(funcion) == list:
+            self.view.mostrar_funcion_header('Funciones con la fecha '+fecha+' ')
+            for function in funcion:
+                self.view.mostrar_funcion(function)
+                self.view.mostrar_funcion_midder()
+            self.view.mostrar_funcion_footer()
+        else:
+            self.view.err('PROBLEMA AL LEER LAS FUNCIONES. REVISA.')
+        return
+    
+    def pelicula_funcion(self):
+        self.view.ask('Id de la pelicula: ')
+        pelicula = input()
+        funcion = self.model.pelicula_funcion(pelicula)
+        if type(funcion) == list:
+            self.view.mostrar_funcion_header('Funciones de la pelicula '+pelicula+' ')
+            for function in funcion:
+                self.view.mostrar_funcion(function)
+                self.view.mostrar_funcion_midder()
+            self.view.mostrar_funcion_footer()
+        else:
+            self.view.err('PROBLEMA AL LEER LAS FUNCIONES. REVISA.')
         return
 
     """
@@ -534,7 +785,7 @@ class Controller:
         return
 
     def eliminar_butaca(self):
-        self.view.ask('ID plicula: ')
+        self.view.ask('ID butaca: ')
         Id_butaca = input()
         count = self.model.eliminar_butaca(Id_butaca)
         if count != 0:
@@ -662,205 +913,6 @@ class Controller:
                 self.view.err('PROBLEMA AL BORRAR LA SALA. REVISA.')
         return
 
-
-    """
-    ************************************
-    *   Controladores usuario/admin  *
-    ************************************
-    """
-
-    def CtrlUsuario(self):
-        os.system ("cls") 
-        o = '0'
-        while o != '9':
-            self.view.menu_usuario()
-            self.view.option('9')
-            o = input()
-            if o == '1':
-                self.registro_usuario()
-            elif o == '2':
-                self.leer_usuarios()
-            elif o == '3':
-                self.actualizar_usuario()
-            elif o == '4':
-                self.eliminar_usuario()
-            elif o == '5':
-                self.registro_admin()
-            elif o == '6':
-                self.leer_admins()
-            elif o == '7':
-                self.actualizar_admin()
-            elif o == '8':
-                self.eliminar_admin()
-            elif o == '9':
-                self.view.end()
-            else:
-                self.view.not_valid_option()
-        return
-
-    '''USER'''
-    def ask_usuario(self):
-        self.view.ask('Nombre: ')
-        Nombre = input()
-        self.view.ask('Email: ')
-        Email = input()
-        self.view.ask('Num: ')
-        Num = input()
-        self.view.ask('password: ')
-        password = input()
-        return[Nombre,Email,Num,password]
-            
-    def leer_usuario(self):
-        self.view.ask('ID usuario: ')
-        Id_Usuario = input()
-        usuario = self.model.leer_usuario(Id_Usuario)
-        if type(usuario) == tuple:
-            self.view.mostrar_usuario_header('Datos del usuario'+Id_Usuario+' ')
-            self.view.mostrar_usuario(usuario)
-            self.view.mostrar_usuario_midder()
-            self.view.mostrar_usuario_footer()
-        else:
-            if usuario == None:
-                self.view.err('El USUARIO NO EXISTE')
-            else: 
-                self.view.err('PROBLEMA AL LEER EL USUARIO. REVISA.')
-        return   
-
-    def leer_usuarios(self):
-        usuarios = self.model.leer_usuarios()
-        if type(usuarios) == list:
-            self.view.mostrar_usuario_header(' Todos lOs usuarios ')
-            for usuario in usuarios:
-                self.view.mostrar_usuario(usuario)
-                self.view.mostrar_usuario_midder()
-            self.view.mostrar_usuario_footer()
-        else:
-            self.view.err('PROBLEMA AL LEER LOS USUARIOS. REVISA')
-        return
-
-    def actualizar_usuario(self):
-        self.view.ask('ID de la usuario: ')
-        Id_Usuario = input()
-        usuario = self.model.leer_usuario(Id_Usuario)
-        if type(usuario) == tuple:
-            self.view.mostrar_usuario_header(' identificador de la usuario '+Id_Usuario+' ')
-            self.view.mostrar_usuario(usuario)
-            self.view.mostrar_usuario_midder()
-            self.view.mostrar_usuario_footer()
-        else:
-            if usuario == None:
-                self.view.err('LA usuario NO EXISTE')
-            else:
-                self.view.err('PROBLEMA AL LEER LA usuario. REVISA')
-            return
-        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual):')
-        whole_vals = self.ask_usuario()
-        fields, vals = self.update_lists(['Nombre','Email','Num','password'], whole_vals)
-        vals.append(Id_Usuario)
-        vals = tuple(vals)
-        out = self.model.actualizar_usuario(fields, vals)
-        if out == True:
-            self.view.ok(Id_Usuario, 'actualizo')
-        else:
-            self.view.err('NO SE PUDO ACTUALIZAR EL USUARIO. REVISA.')
-        return
-
-    def eliminar_usuario(self):
-        self.view.ask('ID usuario: ')
-        Id_Usuario = input()
-        count = self.model.eliminar_usuario(Id_Usuario)
-        if count != 0:
-               self.view.ok(Id_Usuario, 'borro')
-        else: 
-            if count == 0:
-                self.view.err('EL USUARIO NO EXISTE')
-            else:
-                self.view.err('PROBLEMA AL BORRAR AL USUARIO. REVISA.')
-        return
-
-
-    '''ADMIN'''
-
-    def ask_admin(self):
-        self.view.ask('Nombre: ')
-        Nombre = input()
-        self.view.ask('Email: ')
-        Email = input()
-        self.view.ask('Num: ')
-        Num = input()
-        self.view.ask('password: ')
-        password = input()
-        return[Nombre,Email,Num,password]
-            
-    def leer_admin(self):
-        self.view.ask('ID admin: ')
-        Id_Administrador = input()
-        admin = self.model.leer_admin(Id_Administrador)
-        if type(admin) == tuple:
-            self.view.mostrar_admin_header('Datos del admin'+Id_Administrador+' ')
-            self.view.mostrar_admin(admin)
-            self.view.mostrar_admin_midder()
-            self.view.mostrar_admin_footer()
-        else:
-            if admin == None:
-                self.view.err('El ADMINISTRADOR NO EXISTE')
-            else: 
-                self.view.err('PROBLEMA AL LEER EL ADMINISTRADOR. REVISA.')
-        return   
-
-    def leer_admins(self):
-        admins = self.model.leer_admins()
-        if type(admins) == list:
-            self.view.mostrar_admin_header(' Todos los admins ')
-            for admin in admins:
-                self.view.mostrar_admin(admin)
-                self.view.mostrar_admin_midder()
-            self.view.mostrar_admin_footer()
-        else:
-            self.view.err('PROBLEMA AL LEER LOS ADMINISTRADOR. REVISA')
-        return
-
-    def actualizar_admin(self):
-        self.view.ask('ID del admin: ')
-        Id_Administrador = input()
-        admin = self.model.leer_admin(Id_Administrador)
-        if type(admin) == tuple:
-            self.view.mostrar_admin_header(' identificador de la admin '+Id_Administrador+' ')
-            self.view.mostrar_admin(admin)
-            self.view.mostrar_admin_midder()
-            self.view.mostrar_admin_footer()
-        else:
-            if admin == None:
-                self.view.err('EL ADMINISTRADOR NO EXISTE')
-            else:
-                self.view.err('PROBLEMA AL LEER EL ADMINISTRADOR. REVISA')
-            return
-        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual):')
-        whole_vals = self.ask_admin()
-        fields, vals = self.update_lists(['Nombre','Email','Num','password'], whole_vals)
-        vals.append(Id_Administrador)
-        vals = tuple(vals)
-        out = self.model.actualizar_admin(fields, vals)
-        if out == True:
-            self.view.ok(Id_Administrador, 'actualizo')
-        else:
-            self.view.err('NO SE PUDO ACTUALIZAR EL ADMINISTRADOR. REVISA.')
-        return
-
-    def eliminar_admin(self):
-        self.view.ask('ID admin: ')
-        Id_Administrador = input()
-        count = self.model.eliminar_admin(Id_Administrador)
-        if count != 0:
-               self.view.ok(Id_Administrador, 'borro')
-        else: 
-            if count == 0:
-                self.view.err('EL ADMINISTRADOR NO EXISTE')
-            else:
-                self.view.err('PROBLEMA AL BORRAR AL ADMINISTRADOR. REVISA.')
-        return
-
-    
     """
     ************************************
     *   Controladores Tikets  *
@@ -910,8 +962,32 @@ class Controller:
         if result == True:
             self.view.msg('Ticket creado')
             print("creado")
+
+    def crear_Ticket_usuario(self):
+        print('Aregar Ticket')
+        self.view.ask('Id_Funcion: ')
+        Id_Funcion = input()
+        Id_Usuario = self.sesion
+        self.view.ask('Id_Butaca: ')
+        Id_Butaca = input()
+
+        result = self.model.crear_Ticket(Id_Funcion, Id_Usuario, Id_Butaca)
+        if result == True:
+            self.view.msg('Ticket creado')
+            print("creado")
+
+    def leer_Tickets_usuario(self):
+        Id_Usuario = self.sesion
+        tickets = self.model.leer_Tickets_usuario(Id_Usuario)
+        if type(tickets) == list:
+            self.view.mostrar_tickets_header('Tickets del usuario: ')
+            for function in tickets:
+                self.view.mostrar_tickets(function)
+                self.view.mostrar_tickets_midder()
+            self.view.mostrar_tickets_footer()
         else:
-            self.view.err(result)
+            self.view.err('PROBLEMA AL LEER LAS ticketsES. REVISA.')
+        return
 
     def leer_Ticket(self):
         self.view.ask('ID Ticket: ')
@@ -969,7 +1045,7 @@ class Controller:
         return
 
     def eliminar_Ticket(self):
-        self.view.ask('ID plicula: ')
+        self.view.ask('ID del ticket: ')
         Id_Ticket = input()
         count = self.model.eliminar_Ticket(Id_Ticket)
         if count != 0:
@@ -978,5 +1054,5 @@ class Controller:
             if count == 0:
                 self.view.err('LA Ticket NO EXISTE')
             else:
-                self.view.err('PROBLEMA AL BORRAR LA Ticket. REVISA.')
+                self.view.err('PROBLEMA AL BORRAR EL TICKET. REVISA.')
         return

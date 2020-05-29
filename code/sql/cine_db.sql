@@ -6,7 +6,7 @@ use cine_db;
 create table if not exists Usuario(
 	Id_Usuario int not null auto_increment,
     Nombre varchar(75) not null,
-    Email varchar(30) not null,
+    Email varchar(30) not null UNIQUE,
     Num varchar(10) not null,
     password varchar(8) not null,
     primary key (Id_Usuario)
@@ -15,7 +15,7 @@ create table if not exists Usuario(
 create table if not exists Administrador(
 	Id_Administrador int not null auto_increment,
     Nombre varchar(75) not null,
-    Email varchar(30) not null,
+    Email varchar(30) not null UNIQUE,
     Num varchar(10) not null,
     password varchar(8) not null,
     primary key (Id_Administrador)

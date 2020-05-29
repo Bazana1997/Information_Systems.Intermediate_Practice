@@ -99,10 +99,13 @@ class View:
         print('*        MENU ClIENTE      *')
         print('****************************\n')
         print(' 1. Ver funciones')
-        print(' 2. Ver pelicula')
-        print(' 3. Comprar entrada')
-        print(' 4. Ver entrada')
-        print(' 5. Salir')
+        print(' 2. Ver funciones por hora')
+        print(' 3. Ver funciones por fecha')
+        print(' 4. ver funciones por pelicula')
+        print(' 5. Ver pelicula')
+        print(' 6. Comprar entrada')
+        print(' 7. Ver entrada')
+        print(' 8. Salir')
 
 
     def input(self, campo):
@@ -212,7 +215,9 @@ class View:
         print('Id_Funcion: ', record[0])
         print('Id_Pelicula: ', record[1])
         print('Id_Sala: ', record[2])
-        print('horario: ', record[3])
+        print('fecha: ', record[3])
+        print('horario: ', record[4])
+        print('Titulo de la pelicula: ', record[5])
 
     def mostrar_funcion_header(self, header):
           print(header.center(48,'*'))
@@ -239,3 +244,21 @@ class View:
     
     def mostrar_Ticket_footer(self):
         print('*'*48)
+
+    def mostrar_tickets(self, record):
+        print('Id_tickets: ', record[0])
+        print('Id_Pelicula: ', record[1])
+        print('Id_Sala: ', record[2])
+        print('butaca: ', record[3])
+
+    def mostrar_tickets_header(self, header):
+          print(header.center(48,'*'))
+          print('-'*48)
+
+    def mostrar_tickets_midder(self):
+        print('-'*48)
+    
+    def mostrar_tickets_footer(self):
+        print('*'*48)
+
+    
